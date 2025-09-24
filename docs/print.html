@@ -242,7 +242,7 @@ pushd $(mktemp -d)
 # ソースコードを取得
 git clone https://github.com/cybozu/argocd-handson .
 # step1 の内容を元のディレクトリにコピー
-cp -r src/step1/* $(dirs -l +1)
+cp -a src/step1/. $(dirs -l +1)
 # 元のディレクトリに戻る
 popd
 </code></pre>
