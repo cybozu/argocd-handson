@@ -33,19 +33,23 @@ kubectl create namespace prod-hello-server
 
 `MESSAGE` を環境ごとに変えたいので、`MESSAGE` を TLA によって指定できるようにしましょう。Step3 のやり方を参考にやってみてください。
 
-hello-server の kubernetes ディレクトリで以下を実行して `MESSAGE` 環境変数が `Hello (dev)` になっていたら成功です。
+hello-server の kubernetes ディレクトリで以下を実行して `{ "name": "MESSAGE", "value": "Hello (dev)" }` が `env` の配列に追加されていれば成功です。
 
 ```bash
 jsonnet --tla-str tag=abcdefg --tla-str message='Hello (dev)' main.jsonnet
 ```
 
+成功したら一旦 `git commit` しておいてください。
+
 ## ブランチの作成
 
-各環境に対応するブランチを hello-server リポジトリに用意しましょう。main (staging に対応) はすでにあるので、develop (dev に対応) ブランチと release (prod に対応) ブランチを作成してください。参照先は main と同じコミットで大丈夫です。
+各環境に対応するブランチを hello-server リポジトリに用意しましょう。`main` (staging に対応) はすでにあるので、`develop` (dev に対応) ブランチと `release` (prod に対応) ブランチを作成してください。参照先は main と同じコミットで大丈夫です。
 
 ブランチを作成したら、各ブランチを GitHub に push し、さらに各ブランチで `make push` を行ってください。
 
 ## Application リソースの jsonnet 化
+
+それでは hello-apps リポジトリに移動して、3環境の hello-server をデプロイしていきましょう。
 
 デプロイ先の環境が３つになったので、Application リソースも３つ作る必要があります。当然ですが、共通部分はくくりだしたいので、パラメタライズできるように Application リソースを jsonnet 化します。 
 
@@ -84,7 +88,9 @@ jsonnet prod/main.jsonnet | argocd app create --upsert -f -
 
 ## 動作確認
 
-まず bastion に入って curl でリクエストを送ってみましょう。
+適用できたかどうか確かめましょう。まずは Argo CD の UI を見に行き、エラーが出ていないかチェックしてください。
+
+大丈夫そうなら bastion に入って curl でリクエストを送ってみましょう。
 
 ```bash
 kubectl exec -it bastion -- bash
@@ -111,6 +117,8 @@ hello-server の develop ブランチに移動し、main.go の `version` を `v
 
 すると dev 環境に `v3.0.0` がデプロイされるはずです。bastion から確認してみてください。
 
-dev で動作確認できたら staging にデプロイしましょう。develop ブランチから main ブランチにプルリクエストを作り、マージしましょう。そして `make push && argocd app sync staging-hello-server` しましょう。これで staging にデプロイができます。
+dev で動作確認できたら staging にデプロイしましょう。GitHub の UI に移動し、develop ブランチから main ブランチにプルリクエストを作り、マージしましょう。そして `main` ブランチで `git pull && make push && argocd app sync staging-hello-server` しましょう。これで staging にデプロイができます。
 
 prod へのリリースも同様の手順です。やってみましょう。
+
+動作確認が完了したらこのステップは完了です。hello-apps で変更したファイルをコミット & push して、次のステップに進みましょう。
