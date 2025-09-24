@@ -79,7 +79,7 @@ jsonnet 化ができたら `*.yaml` の方のマニフェストは不要なの�
 
 1. `image:` で始まる行を以下のように書き換えます。
     ```jsonnet
-    image: 'ghcr.io/YOUR_NAME/hello-server:' + tag,
+    image: 'docker.example.com/hello-server:' + tag,
     ```
     これで image のタグを外部から指定できるようになりました。
 

@@ -16,7 +16,7 @@ app-of-apps の考え方を採用すると、Kubernetes クラスタごとにひ
 | `*-apps` | (Kubernetes cluster, チーム) ごとにひとつ | そのチームに属する人
 | サービスごとの Application | (Kubernetes cluster, 環境, サービス) ごとにひとつ | 同上
 
-※ 実際にはもっと複雑ですが、このハンズオンでは単純化して説明しています。
+※ 実際にはもっと複雑ですが、このハンズオンではかなり単純化して説明しています。
 
 ## app-of-apps を導入する
 

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hello-server
-        image: ghcr.io/YOUR_NAME/hello-server:latest
+        image: docker.example.com/hello-server:latest
         # このチュートリアルではコンテナレジストリではなくローカルからイメージを取得するので
         # imagePullPolicy に Never を指定する。
         imagePullPolicy: Never

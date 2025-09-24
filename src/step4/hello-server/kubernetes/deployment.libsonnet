@@ -25,7 +25,7 @@ function(tag, message)
           containers: [
             {
               name: 'hello-server',
-              image: 'ghcr.io/YOUR_NAME/hello-server:' + tag,
+              image: 'docker.example.com/hello-server:' + tag,
               imagePullPolicy: 'Never',
               ports: [
                 {

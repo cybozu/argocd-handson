@@ -1,5 +1,5 @@
 SOURCES = $(wildcard *.go) go.mod
-CONTAINER_REPOSITORY = ghcr.io/YOUR_NAME/hello-server
+CONTAINER_REPOSITORY = docker.example.com/hello-server
 
 hello-server: $(SOURCES)
 	 CGO_ENABLED=0 go build -trimpath -o $@
