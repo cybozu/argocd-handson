@@ -197,6 +197,9 @@
 kubectl create namespace staging-hello-server
 kubectl create namespace prod-hello-server
 </code></pre>
+<p>Application リソースを作り直すので前のステップで作成した Application リソースは削除しておきます。</p>
+<pre><code class="language-bash">argocd app delete hello-server
+</code></pre>
 <h2 id="message-を差し込めるようにする"><a class="header" href="#message-を差し込めるようにする">MESSAGE を差し込めるようにする</a></h2>
 <p><code>MESSAGE</code> を環境ごとに変えたいので、<code>MESSAGE</code> を TLA によって指定できるようにしましょう。Step3 のやり方を参考にやってみてください。</p>
 <p>hello-server の kubernetes ディレクトリで以下を実行して <code>{ "name": "MESSAGE", "value": "Hello (dev)" }</code> が <code>env</code> の配列に追加されていれば成功です。</p>
