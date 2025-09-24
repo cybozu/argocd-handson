@@ -103,7 +103,7 @@ kubectl get all -n prod-hello-server
 
 せっかくなので、Application を更新してみましょう。
 
-`hello-server.libsonnet` の `value: 'Hello (%s)' % env,` の部分を `value: 'Hello World (%s)' % env,` に書き換えて `argocd app sync root-app` してください。各 Application が自動的に更新され、新しい value が反映されるはずです。
+`hello-server.libsonnet` の `value: 'Hello (%s)' % env,` の部分を `value: 'Hello World (%s)' % env,` に書き換えて commit & push し、`argocd app sync root-app` してください。各 Application が自動的に更新され、新しい value が反映されるはずです。
 
 ここで dev, staging, prod が一斉に更新されたことに気付いた人もいるかもしれません。実は現在の hello-apps の作りでは dev → staging → prod と段階を踏むようにはなっていません。これを行うには hello-server と同様、hello-apps にも `develop`, `main`, `release` のようにブランチを作り、root-app から各環境ごとに異なるブランチを参照するようにする必要があります。興味がある人はぜひやってみてください。
 
