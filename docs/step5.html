@@ -251,7 +251,7 @@ kubectl get all -n prod-hello-server
 <p>唯一 root-app だけは更新時に手動で <code>argocd app create --upsert</code> する必要があります。しかし root-app はめったに変更しないでしょうから、コストとしては許容範囲内だと思います。</p>
 <h2 id="動作確認"><a class="header" href="#動作確認">動作確認</a></h2>
 <p>せっかくなので、Application を更新してみましょう。</p>
-<p><code>hello-server.libsonnet</code> の <code>value: 'Hello (%s)' % env,</code> の部分を <code>value: 'Hello World (%s)' % env,</code> に書き換えて <code>argocd app sync root-app</code> してください。各 Application が自動的に更新され、新しい value が反映されるはずです。</p>
+<p><code>hello-server.libsonnet</code> の <code>value: 'Hello (%s)' % env,</code> の部分を <code>value: 'Hello World (%s)' % env,</code> に書き換えて commit &amp; push し、<code>argocd app sync root-app</code> してください。各 Application が自動的に更新され、新しい value が反映されるはずです。</p>
 <p>ここで dev, staging, prod が一斉に更新されたことに気付いた人もいるかもしれません。実は現在の hello-apps の作りでは dev → staging → prod と段階を踏むようにはなっていません。これを行うには hello-server と同様、hello-apps にも <code>develop</code>, <code>main</code>, <code>release</code> のようにブランチを作り、root-app から各環境ごとに異なるブランチを参照するようにする必要があります。興味がある人はぜひやってみてください。</p>
 <p>以上でハンズオンは終わりです。
 私達は GitHub 上のコードの変更 (<code>hello-server</code> も <code>hello-apps</code> も両方) に自動で追従する Kubernetes 環境を構築できました。
