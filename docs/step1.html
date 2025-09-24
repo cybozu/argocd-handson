@@ -181,9 +181,21 @@
 <p>GitHub に新しく Git リポジトリを作成してください。名前は何でもいいですが、ここでは <code>hello-server</code> という名前にしたという前提で進めていきます。
 後々 Argo CD から read する必要があるので、リポジトリのスコープは public にしておいてください。</p>
 <h2 id="ソースコードをコピー"><a class="header" href="#ソースコードをコピー">ソースコードをコピー</a></h2>
-<p>以下のディレクトリに簡単な HTTP サーバーのソースコードと Kubernetes マニフェストが入っています。これを今作ったリポジトリにコピーしてください。</p>
+<p><code>hello-server</code> に最初のコードを投入しましょう。</p>
+<p>以下のディレクトリに簡単な HTTP サーバーのソースコードと Kubernetes マニフェストが入っています。</p>
 <p><a href="https://github.com/cybozu/argocd-handson/tree/main/src/step1/">https://github.com/cybozu/argocd-handson/tree/main/src/step1/</a></p>
-<p>コピーしたファイルやディレクトリをすべてコミットして <code>git push</code> してください。</p>
+<p>これを今作ったリポジトリにコピーします。
+カレントディレクトリが <code>hello-server</code> のトップにある状態で以下の手順を実行してください。</p>
+<pre><code class="language-bash"># 一時ディレクトリ作成してそこに移動
+pushd $(mktemp -d)
+# ソースコードを取得
+git clone https://github.com/cybozu/argocd-handson .
+# step1 の内容を元のディレクトリにコピー
+cp -r src/step1/* $(dirs -l +1)
+# 元のディレクトリに戻る
+popd
+</code></pre>
+<p>コピーしたファイルやディレクトリをすべてコミットして <code>git push</code> しておいてください。</p>
 <h2 id="イメージをビルド"><a class="header" href="#イメージをビルド">イメージをビルド</a></h2>
 <p><code>make push</code> するとイメージをビルドしてローカルの kind クラスタにイメージをロードできます。やってみてください。</p>
 <p>※ mac を使っている人は <code>go build</code> に環境変数として <code>GOOS=linux GOARCH=amd64</code> を渡す必要があります。</p>
