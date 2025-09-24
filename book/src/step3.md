@@ -62,7 +62,7 @@ jsonnet main.jsonnet
 
 これで2つのマニフェストを配列としてまとめたものが出力されれば成功です。
 
-ここで jsonnet スクリプトの拡張子について説明しておきます。慣習的に以下のように拡張子を使い分けることが多いです。
+`.jsonnt` と `.libsonnet` という２つの拡張子が出てきましたが、これらは慣習的に以下のように使い分けることが多いです。
 
 - `.jsonnet`: エントリポイントとなる jsonnet スクリプト
 - `.libsonnet`: 他の jsonnet スクリプトから import される jsonnet スクリプト
@@ -88,7 +88,7 @@ jsonnet 化ができたら `*.yaml` の方のマニフェストは不要なの�
    jsonnetfmt -i deployment.libsonnet
    ```
 
-この修正によって deployment.libsonnet が関数化されたので、main.jsonnet の方も修正しなければなりません。以下のように、deployment.libsonnet に引数を渡すように書き換えます。
+この修正によって deployment.libsonnet が関数化されたので、main.jsonnet の方も修正しなければなりません。main.jsonnet 自体が tag を受け取るようにし、かつ deployment.libsonnet に tag を渡すようにします。
 
 ```jsonnet
 function(tag)
@@ -98,11 +98,13 @@ function(tag)
   ]
 ```
 
-この書き換えにより、main.jsonnet のトップレベルの式が関数を返すようになりました。この関数の引数は **TLAs (Top-Level Arguments)** と呼ばれます。TLAs の値は `jsonnet` コマンドのコマンドライン引数として与えることができます。
+このように、jsonnet では最上位の式が引数を受け取ることができます。この引数は **TLAs (Top-Level Arguments)** と呼ばれます。TLAs の値は `jsonnet` コマンドのコマンドライン引数として与えることができます。
 
 ```bash
 jsonnet --tla-str tag=abcdefg main.jsonnet
 ```
+
+これで `tag` を外部から差し込む準備ができました。
 
 hello-server を変更したので、`git commit` と `git push` を行い、そして `make push` しておいてください。
 `make push` は本来は CI で行うべきですが、今回のハンズオンでは人力で CI を代替します。
