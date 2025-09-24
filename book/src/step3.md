@@ -141,9 +141,9 @@ argocd app create --upsert -f hello-server.yaml
 
 ## サービスをアップデートしてみる
 
-hello-server の main.go の version を `2.0.0` に書き換えてデプロイしてみましょう。
+このステップで行った変更により、Argo CD は main ブランチの最新のコミットを Kubernetes クラスタに自動的にデプロイするようになりました。本当にデプロイしてくれるのか、実際に試してみましょう。
 
-ソースコードを書き換える → コミット → git push します。
+hello-server の main.go の version の値を `2.0.0` に書き換えて、コミット & push してください。
 
 本来はこれだけで変更がデプロイされるはずですが、前述の通りハンズオンでは CI がないので以下の手順を行います。
 
@@ -157,3 +157,6 @@ argocd app sync hello-server
 ```
 
 sync が終われば、hello-server にリクエストを送ると `Hello (2.0.0)` が返ってくるはずです。
+Step1 で行った手順を参考に、確認してみてください。
+
+更新されたことが確認できればこのステップは完了です。hello-apps の方もコミット & push して、次のステップに進みましょう。
