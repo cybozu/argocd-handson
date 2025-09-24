@@ -199,13 +199,15 @@ kubectl create namespace prod-hello-server
 </code></pre>
 <h2 id="message-を差し込めるようにする"><a class="header" href="#message-を差し込めるようにする">MESSAGE を差し込めるようにする</a></h2>
 <p><code>MESSAGE</code> を環境ごとに変えたいので、<code>MESSAGE</code> を TLA によって指定できるようにしましょう。Step3 のやり方を参考にやってみてください。</p>
-<p>hello-server の kubernetes ディレクトリで以下を実行して <code>MESSAGE</code> 環境変数が <code>Hello (dev)</code> になっていたら成功です。</p>
+<p>hello-server の kubernetes ディレクトリで以下を実行して <code>{ "name": "MESSAGE", "value": "Hello (dev)" }</code> が <code>env</code> の配列に追加されていれば成功です。</p>
 <pre><code class="language-bash">jsonnet --tla-str tag=abcdefg --tla-str message='Hello (dev)' main.jsonnet
 </code></pre>
+<p>成功したら一旦 <code>git commit</code> しておいてください。</p>
 <h2 id="ブランチの作成"><a class="header" href="#ブランチの作成">ブランチの作成</a></h2>
-<p>各環境に対応するブランチを hello-server リポジトリに用意しましょう。main (staging に対応) はすでにあるので、develop (dev に対応) ブランチと release (prod に対応) ブランチを作成してください。参照先は main と同じコミットで大丈夫です。</p>
+<p>各環境に対応するブランチを hello-server リポジトリに用意しましょう。<code>main</code> (staging に対応) はすでにあるので、<code>develop</code> (dev に対応) ブランチと <code>release</code> (prod に対応) ブランチを作成してください。参照先は main と同じコミットで大丈夫です。</p>
 <p>ブランチを作成したら、各ブランチを GitHub に push し、さらに各ブランチで <code>make push</code> を行ってください。</p>
 <h2 id="application-リソースの-jsonnet-化"><a class="header" href="#application-リソースの-jsonnet-化">Application リソースの jsonnet 化</a></h2>
+<p>それでは hello-apps リポジトリに移動して、3環境の hello-server をデプロイしていきましょう。</p>
 <p>デプロイ先の環境が３つになったので、Application リソースも３つ作る必要があります。当然ですが、共通部分はくくりだしたいので、パラメタライズできるように Application リソースを jsonnet 化します。</p>
 <p>Step3 の手順を参考に、hello-apps の hello-server.yaml を jsonnet 化して、hello-server.libsonnet を作ってください。</p>
 <p>そして、hello-server.libsonnet の内容を関数でくるみ、<code>env</code> と <code>branch</code> を引数で渡せるようにしましょう。
@@ -246,7 +248,8 @@ jsonnet staging/main.jsonnet | argocd app create --upsert -f -
 jsonnet prod/main.jsonnet | argocd app create --upsert -f -
 </code></pre>
 <h2 id="動作確認"><a class="header" href="#動作確認">動作確認</a></h2>
-<p>まず bastion に入って curl でリクエストを送ってみましょう。</p>
+<p>適用できたかどうか確かめましょう。まずは Argo CD の UI を見に行き、エラーが出ていないかチェックしてください。</p>
+<p>大丈夫そうなら bastion に入って curl でリクエストを送ってみましょう。</p>
 <pre><code class="language-bash">kubectl exec -it bastion -- bash
 (bastion)$ curl -i hello-server.dev-hello-server.svc.cluster.local
 ...
@@ -265,8 +268,9 @@ Hello (prod) (v2.0.0)
 <p>hello-server の develop ブランチに移動し、main.go の <code>version</code> を <code>v3.0.0</code> などに書き換えて commit &amp; push してください。</p>
 <p>そして <code>make push</code> し、<code>argocd app sync dev-hello-server</code> してください。(繰り返しますが、この手順は本来は CI で自動化されているものです。今回はハンズオンのため、手動でやっています)</p>
 <p>すると dev 環境に <code>v3.0.0</code> がデプロイされるはずです。bastion から確認してみてください。</p>
-<p>dev で動作確認できたら staging にデプロイしましょう。develop ブランチから main ブランチにプルリクエストを作り、マージしましょう。そして <code>make push &amp;&amp; argocd app sync staging-hello-server</code> しましょう。これで staging にデプロイができます。</p>
+<p>dev で動作確認できたら staging にデプロイしましょう。GitHub の UI に移動し、develop ブランチから main ブランチにプルリクエストを作り、マージしましょう。そして <code>main</code> ブランチで <code>git pull &amp;&amp; make push &amp;&amp; argocd app sync staging-hello-server</code> しましょう。これで staging にデプロイができます。</p>
 <p>prod へのリリースも同様の手順です。やってみましょう。</p>
+<p>動作確認が完了したらこのステップは完了です。hello-apps で変更したファイルをコミット &amp; push して、次のステップに進みましょう。</p>
 
                     </main>
 
