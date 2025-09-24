@@ -1,0 +1,342 @@
+<!DOCTYPE HTML>
+<html lang="ja" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Step3: アップデートできるようにする - 実践 Argo CD</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">実践 Argo CD</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="step3-アップデートできるようにする"><a class="header" href="#step3-アップデートできるようにする">Step3: アップデートできるようにする</a></h1>
+<p>現在のマニフェストは image に latest タグを指定しています。しかし、実際の運用では latest タグを使うことは非推奨です。第一に、latest タグの内容はその時々によって変化するので、デプロイに再現性がありません。第二に、ソースコードを更新したときにマニフェストに差分が発生しないので、差分発生をトリガーとしてデプロイを行う Kubernetes の考え方と相性が悪いです。</p>
+<p>そこで、latest タグではなく、特定のバージョンを一意に指定できる文字列、例えばコミットハッシュを指定することにします。</p>
+<p>しかし、ナイーブにこれを実現しようとすると、ソースコードに変更が入るたびにマニフェストの image を手動で変更することになります。実際にこういう運用をしているチームもあるのですが、煩雑ですしミスをするリスクもあるので自動化すべきでしょう。</p>
+<p>よって、以下のような仕様にします。</p>
+<ul>
+<li>ソースコードが変更されるたびに、CI で docker イメージをビルドし、コミットハッシュをタグとして push する。</li>
+<li>Argo CD によって main ブランチを監視し、main ブランチが変更されるたびに main ブランチの最新のコミットハッシュを使ってサービスをデプロイする。</li>
+</ul>
+<p>ただし、今回のハンズオンでは CI をセットアップする時間がないので人力 CI で代替します。</p>
+<h2 id="jsonnet-を導入する"><a class="header" href="#jsonnet-を導入する">jsonnet を導入する</a></h2>
+<p>今までマニフェストは単なる YAML ファイルでしたが、image タグを動的に差し込む必要があるので、何かしらの仕組みを導入しなければなりません。選択肢として</p>
+<ul>
+<li>kustomize</li>
+<li>jsonnet</li>
+<li>helm</li>
+</ul>
+<p>などがありますが、このハンズオンでは jsonnet を採用します。</p>
+<p>まず、既存のマニフェストを jsonnet 化していきましょう。</p>
+<p>YAML から JSON に変換するスクリプトを書いておくと便利なので、以下のスクリプトを PATH の通ったディレクトリに <code>yaml2json</code> という名前で保存しましょう。 <code>chmod +x</code> もしておいてください。</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+import yaml, json, sys
+docs = yaml.safe_load_all(sys.stdin)
+jsons = [json.dumps(doc, indent=2) for doc in docs]
+print("\n---\n".join(jsons))
+</code></pre>
+<p>(このスクリプトを動かすには PyYAML が必要です。入ってない人は <code>sudo apt install python3-yaml</code> または <code>python3 -m pip install pyyaml</code> でインストールしてください)</p>
+<p>それでは、step2 で作成した YAML マニフェストを jsonnet 化していきましょう。
+hello-server の <code>kubernetes</code> ディレクトリに移動して以下の手順を行ってください。</p>
+<pre><code class="language-bash">cat deployment.yaml | yaml2json | jsonnetfmt - &gt; deployment.libsonnet
+cat service.yaml | yaml2json | jsonnetfmt - &gt; service.libsonnet
+</code></pre>
+<p>そして、<code>main.jsonnet</code> を以下の内容で作成します。</p>
+<pre><code class="language-jsonnet">[
+  import 'deployment.libsonnet',
+  import 'service.libsonnet',
+]
+</code></pre>
+<p>これで jsonnet 化は完了です。動作確認してみましょう。</p>
+<pre><code class="language-bash">jsonnet main.jsonnet
+</code></pre>
+<p>これで2つのマニフェストを配列としてまとめたものが出力されれば成功です。</p>
+<p>ここで jsonnet スクリプトの拡張子について説明しておきます。慣習的に以下のように拡張子を使い分けることが多いです。</p>
+<ul>
+<li><code>.jsonnet</code>: エントリポイントとなる jsonnet スクリプト</li>
+<li><code>.libsonnet</code>: 他の jsonnet スクリプトから import される jsonnet スクリプト</li>
+</ul>
+<p>jsonnet 化ができたら <code>*.yaml</code> の方のマニフェストは不要なので <code>git rm</code> しておいてください（残していると Argo CD によって両方デプロイされてしまいます）。</p>
+<h2 id="タグを差し込めるようにする"><a class="header" href="#タグを差し込めるようにする">タグを差し込めるようにする</a></h2>
+<p>では、タグを外部から差し込めるようにしましょう。</p>
+<p>まず、Deployment をタグを引数を取る関数として定義します。deployment.libsonnet を以下のように書き換えてください。</p>
+<ol>
+<li>
+<p>ファイルの先頭に <code>function(tag)</code> という行を挿入します。jsonnet では <code>function(引数) 式</code> という構文で無名関数を記述できます。もともと <code>deployment.libsonnet</code> はひとつの式だったので、これにより <code>tag</code> を受け取ってオブジェクトを返す関数になりました。</p>
+</li>
+<li>
+<p><code>image:</code> で始まる行を以下のように書き換えます。</p>
+<pre><code class="language-jsonnet">image: 'docker.example.com/hello-server:' + tag,
+</code></pre>
+<p>これで image のタグを外部から指定できるようになりました。</p>
+</li>
+<li>
+<p>フォーマットを整えます。</p>
+<pre><code class="language-bash">jsonnetfmt -i deployment.libsonnet
+</code></pre>
+</li>
+</ol>
+<p>この修正によって deployment.libsonnet が関数化されたので、main.jsonnet の方も修正しなければなりません。以下のように、deployment.libsonnet に引数を渡すように書き換えます。</p>
+<pre><code class="language-jsonnet">function(tag)
+  [
+    (import 'deployment.libsonnet')(tag),
+    import 'service.libsonnet',
+  ]
+</code></pre>
+<p>この書き換えにより、main.jsonnet のトップレベルの式が関数を返すようになりました。この関数の引数は <strong>TLAs (Top-Level Arguments)</strong> と呼ばれます。TLAs の値は <code>jsonnet</code> コマンドのコマンドライン引数として与えることができます。</p>
+<pre><code class="language-bash">jsonnet --tla-str tag=abcdefg main.jsonnet
+</code></pre>
+<p>hello-server を変更したので、<code>git commit</code> と <code>git push</code> を行い、そして <code>make push</code> しておいてください。
+<code>make push</code> は本来は CI で行うべきですが、今回のハンズオンでは人力で CI を代替します。</p>
+<h2 id="argo-cd-から-tlas-経由で引数を渡す"><a class="header" href="#argo-cd-から-tlas-経由で引数を渡す">Argo CD から TLAs 経由で引数を渡す</a></h2>
+<p>最後に、Argo CD から TLAs 経由でタグを差し込むようにしましょう。<code>hello-apps</code> の <code>hello-server.yaml</code> を以下のように書き換えてください。</p>
+<pre><code class="language-yaml">...
+  source:
+    ...
+    path: ...
+    # ！！以下を追加！！
+    # jsonnet の TLAs に渡す引数を指定する。
+    directory:
+      jsonnet:
+        tlas:
+        - name: "tag"
+          value: "$ARGOCD_APP_REVISION"
+    # ！！追加ここまで！！
+...
+</code></pre>
+<p><code>$ARGOCD_APP_REVISION</code> は <a href="https://argo-cd.readthedocs.io/en/stable/user-guide/build-environment/">Build Envrionemnt</a> と呼ばれる環境変数的なもので、Argo CD が実行時にデプロイ対象のコミットハッシュに置き換えてくれます。このように指定することで、tag には hello-server の main ブランチの最新のコミットハッシュが 渡されます。</p>
+<p>それでは、Application を更新しましょう。</p>
+<pre><code class="language-bash">argocd app create --upsert -f hello-server.yaml
+</code></pre>
+<p>このコマンドを打ったら Argo CD の UI を確認しましょう。うまく行っていれば、latest タグではなくコミットハッシュで指定されたイメージがデプロイされるはずです。</p>
+<h2 id="サービスをアップデートしてみる"><a class="header" href="#サービスをアップデートしてみる">サービスをアップデートしてみる</a></h2>
+<p>hello-server の main.go の version を <code>2.0.0</code> に書き換えてデプロイしてみましょう。</p>
+<p>ソースコードを書き換える → コミット → git push します。</p>
+<p>本来はこれだけで変更がデプロイされるはずですが、前述の通りハンズオンでは CI がないので以下の手順を行います。</p>
+<pre><code class="language-bash"># イメージをビルドして push する
+make push
+
+# Argo CD の sync を手動でキックする
+# 何もしなくても待っていれば自動的に sync されるが、待つのが面倒なので
+argocd app sync hello-server
+</code></pre>
+<p>sync が終われば、hello-server にリクエストを送ると <code>Hello (2.0.0)</code> が返ってくるはずです。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="step2.5.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="step4.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="step2.5.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="step4.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

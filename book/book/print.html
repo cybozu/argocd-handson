@@ -1,0 +1,657 @@
+<!DOCTYPE HTML>
+<html lang="ja" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>実践 Argo CD</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">実践 Argo CD</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="実践-argo-cd"><a class="header" href="#実践-argo-cd">実践 Argo CD</a></h1>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>Argo CD は Kubernetes へのデプロイを自動化するためのツールです。
+Argo CD を使えば、手動で <code>kubectl apply</code> を行うことなくマニフェストを必要なときに自動的に apply し、リソースの状態を常にコードと同期した状態に保つことができます。
+これにより、人手によるミスを減らし、Kubernetes での運用を安全かつ効率的に行うことができます。</p>
+<p>実践 Argo CD は Argo CD を使って Web サービスを実際にデプロイしてみるハンズオンです。Kubernetes の初歩は知っているけど、Argo CD については何も知らない人を対象にしています。</p>
+<p>このハンズオンは、最も単純な例からスタートして、アップデートや複数環境対応といったよくある要件を実装していきます。</p>
+<p>このハンズオンを終えれば、Argo CD の基本的な利用方法を理解できるはずです。</p>
+<h2 id="目次"><a class="header" href="#目次">目次</a></h2>
+<ul>
+<li><a href="./step0.html">Step0: 環境準備</a></li>
+<li><a href="./step1.html">Step1: kubectl apply でデプロイする</a></li>
+<li><a href="./step2.html">Step2: Argo CD を使ってデプロイしてみる</a></li>
+<li><a href="./step2.5.html">Step2.5: jsonnet 入門</a></li>
+<li><a href="./step3.html">Step3: アップデートできるようにする</a></li>
+<li><a href="./step4.html">Step4: 複数環境にデプロイする</a></li>
+<li><a href="./step5.html">Step5: app-of-apps</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="step0-環境準備"><a class="header" href="#step0-環境準備">Step0: 環境準備</a></h1>
+<p>まずはローカルに Argo CD を立て、自由に触れられる環境を準備しましょう。</p>
+<h2 id="ローカル-kubernetes-クラスタの構築"><a class="header" href="#ローカル-kubernetes-クラスタの構築">ローカル Kubernetes クラスタの構築</a></h2>
+<p>最初にローカルに Kubernetes クラスタを構築してください。構築には <a href="https://kind.sigs.k8s.io/">kind</a> を使ってください。</p>
+<pre><code class="language-bash"># kind のインストール手順は省略します。公式サイトの手順に従ってください。
+
+# kind のクラスタを作成
+kind create cluster
+
+# `kind-control-plane` が存在していることを確認する
+kubectl get node
+</code></pre>
+<p>※ 他の構築ツールでもほとんどの作業は実施可能なので、minikube などでもこのハンズオンを進めることができます。ただし、イメージのロードの部分だけは手順を置き換える必要があります。</p>
+<h2 id="ローカル-argo-cd-の構築"><a class="header" href="#ローカル-argo-cd-の構築">ローカル Argo CD の構築</a></h2>
+<p><a href="https://argo-cd.readthedocs.io/en/stable/getting_started/">Getting Started</a> の1番から4番までの手順を行ってください。3番の手順でどれを選んだらいいかわからない人はとりあえず port forward にしておくのが安牌だと思います。</p>
+<p>4番まで終わったらブラウザから argocd-server にアクセスしてみてください。UI が見れてログインできれば成功です。</p>
+<h2 id="jsonnet-のインストール"><a class="header" href="#jsonnet-のインストール">jsonnet のインストール</a></h2>
+<p>jsonnet の<a href="https://github.com/google/jsonnet/releases">公式のバイナリ</a>をPATHの通った任意のディレクトリに突っ込んでください。</p>
+<p>※ Kubernetes 環境に適用されるマニフェストは Argo CD がバンドルしている Go 版 jsonnet によって生成されるので、厳密な動作確認には Argo CD が使うのと同じ jsonnet を使うのが望ましいです。ハンズオンではそこまでの厳密さは必要ないと思うので、最新の C++ 版のバイナリを使うことにしています。</p>
+<h2 id="動作確認用に-bastion-をデプロイしておく"><a class="header" href="#動作確認用に-bastion-をデプロイしておく">動作確認用に bastion をデプロイしておく</a></h2>
+<p>構築したサービスの動作を確認するために bastion (kubectl exec で入ってオペレーションするための踏み台) を用意しておきます。これはハンズオンのために便宜的に用意しているだけのもので、実運用では不要です。</p>
+<p>以下のマニフェストを <code>kubectl apply</code> してください。</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: bastion
+spec:
+  containers:
+  - name: bastion
+    image: cimg/base:stable
+    command: ["sleep", "infinity"]
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="step1-kubectl-apply-でデプロイする"><a class="header" href="#step1-kubectl-apply-でデプロイする">Step1: kubectl apply でデプロイする</a></h1>
+<p>まずは Argo CD を使わずに普通にサービスをデプロイしてみます。</p>
+<h2 id="git-リポジトリを作る"><a class="header" href="#git-リポジトリを作る">Git リポジトリを作る</a></h2>
+<p>GitHub に新しく Git リポジトリを作成してください。名前は何でもいいですが、ここでは <code>hello-server</code> という名前にしたという前提で進めていきます。
+後々 Argo CD から read する必要があるので、リポジトリのスコープは public にしておいてください。</p>
+<h2 id="ソースコードをコピー"><a class="header" href="#ソースコードをコピー">ソースコードをコピー</a></h2>
+<p>以下のディレクトリに簡単な HTTP サーバーのソースコードと Kubernetes マニフェストが入っています。これを今作ったリポジトリにコピーしてください。</p>
+<p><a href="https://github.com/cybozu/argocd-handson/blob/main/step1/">https://github.com/cybozu/argocd-handson/blob/main/step1/</a></p>
+<p>コピーしたファイルやディレクトリをすべてコミットして <code>git push</code> してください。</p>
+<h2 id="イメージをビルド"><a class="header" href="#イメージをビルド">イメージをビルド</a></h2>
+<p><code>make push</code> するとイメージをビルドしてローカルの kind クラスタにイメージをロードできます。やってみてください。</p>
+<p>※ mac を使っている人は <code>go build</code> に環境変数として <code>GOOS=linux GOARCH=amd64</code> を渡す必要があります。</p>
+<p>※ kind 以外のクラスタ構築ツールを使っている人は <code>Makefile</code> の push の手順を書き換える必要があります。例えば、minikube を使っている人は <code>kind load docker-image</code> の代わりに <code>minikube image load</code> を使うように書き換えてください。</p>
+<p>実際の運用では <code>make push</code> でコンテナレジストリへの push を行う想定ですが、今回のハンズオンではコンテナレジストリを用意する手間を省くために、コンテナレジストリへの push は行っていません。
+その代わりに kind の機能を使ってノードに直接イメージをロードしています。</p>
+<h2 id="イメージの動作確認"><a class="header" href="#イメージの動作確認">イメージの動作確認</a></h2>
+<p>念のため、今ビルドしたイメージが動くのか確かめてみましょう。
+まずはサーバーを起動します。</p>
+<pre><code class="language-bash">docker run --rm -p 3000:8080 docker.example.com/hello-server:latest
+</code></pre>
+<p>そして別のシェルから以下を実行してください。</p>
+<pre><code class="language-bash">curl -i localhost:3000
+</code></pre>
+<p>正常にレスポンスが返ってくれば成功です。</p>
+<p>※ ローカル側のポートを 3000 にしているのは、Argo CD 用のポートフォワードと被らないようにするためです。</p>
+<h2 id="kubernetes-にデプロイ"><a class="header" href="#kubernetes-にデプロイ">Kubernetes にデプロイ</a></h2>
+<p>Kubernetes クラスタにデプロイしてみましょう。
+まずは Argo CD を使わず、普段通り <code>kubectl apply</code> でデプロイします。</p>
+<pre><code class="language-bash">kubectl create namespace hello-server
+kubectl apply -n hello-server -f kubernetes/deployment.yaml
+kubectl apply -n hello-server -f kubernetes/service.yaml
+
+# 確認
+kubectl get all -n hello-server
+
+# アクセスしてみる
+kubectl exec -it bastion -- curl -i http://hello-server.hello-server.svc.cluster.local
+</code></pre>
+<p>アクセスが正常に行われれば成功です。</p>
+<h2 id="後片付け"><a class="header" href="#後片付け">後片付け</a></h2>
+<p>以上で Argo CD の使い方を学ぶ準備ができました。
+次のステップで Argo CD を使ってデプロイしなおすので、一旦 Kubernetes 環境は綺麗にしておきます。</p>
+<pre><code class="language-bash">kubectl delete namespace hello-server
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="step2-argo-cd-を使ってデプロイしてみる"><a class="header" href="#step2-argo-cd-を使ってデプロイしてみる">Step2: Argo CD を使ってデプロイしてみる</a></h1>
+<p>それでは Argo CD を使ってデプロイしてみましょう。</p>
+<h2 id="argo-cd用の-git-リポジトリを作る"><a class="header" href="#argo-cd用の-git-リポジトリを作る">Argo CD用の Git リポジトリを作る</a></h2>
+<p>Step1 で作ったリポジトリとは別に、Argo CD のマニフェストを置くためのリポジトリを GitHub に作ってください。リポジトリ名は何でもいいですが、ここでは <code>hello-apps</code> を指定したものとして進めます。リポジトリのスコープは public にしておいてください。</p>
+<h2 id="マニフェストをコピーする"><a class="header" href="#マニフェストをコピーする">マニフェストをコピーする</a></h2>
+<p>以下のマニフェストを <code>hello-server.yaml</code> という名前で <code>hello-apps</code> リポジトリの直下に作ってください。</p>
+<pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hello-server
+  # Application リソースは決められた namespace に作成しないといけない。
+  namespace: argocd
+  # Application を消した時にその Application が作成したリソースを削除する。
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    # repoURL は自分のリポジトリのURLに合わせて書き換えてください
+    repoURL: https://github.com/YOUR_NAME/hello-server
+    # "Revision" という名前だがブランチも指定できる。
+    targetRevision: main
+    # Kubernetes マニフェストを含むディレクトリを指定する。
+    path: kubernetes
+  destination:
+    server: https://kubernetes.default.svc
+    # sync 先の namespace。 metadata のほうの namespace と混同しないように。
+    namespace: hello-server
+  syncPolicy:
+    automated:
+      # prune が true の場合、Git に定義されていないリソースを自動的に削除する。
+      prune: true
+      # selfHeal が true の場合、Git にコミットがないときでも定期的に sync を行う。
+      selfHeal: true
+</code></pre>
+<p>この “Application” というリソースが Argo CD の中核となるリソースです。これは「どのソースコードを」「どの環境に」「どういうパラメータで」適用するか、という情報を含んだリソースです。”Application” という単語が汎用的すぎてちょっとわかりにくいですが、<code>kubectl apply</code> の <code>apply</code> を名詞化したものだと思っておくのがよいと思います。このリソースを使うことで <code>kubectl apply</code> を自動化することができます。</p>
+<p>マニフェストをコピーしたら自分の環境に合わせて <strong>repoURL, targetRevision, path を書き換えてください</strong>。</p>
+<ul>
+<li><code>repoURL</code> には、自分の hello-server のリポジトリの URL を指定します。</li>
+<li><code>targetRevision</code> には、自分の hello-server のデフォルトブランチ (main または master) を指定します。</li>
+<li><code>path</code> にはマニフェストを格納したディレクトリへのパスを指定します。このハンズオンの手順の通りにすすめていれば <code>kubernetes</code> を指定することになるでしょう。</li>
+</ul>
+<h2 id="argo-cd-を使ってデプロイする"><a class="header" href="#argo-cd-を使ってデプロイする">Argo CD を使ってデプロイする</a></h2>
+<pre><code class="language-bash">kubectl create namespace hello-server
+argocd app create -f hello-server.yaml
+</code></pre>
+<p>Argo CD の UI を見に行くと作成されたアプリケーションの様子が確認できます。</p>
+<p><img src="./images/argocd-ui-screenshot.png" alt="Argo CD UI Screenshot" /></p>
+<p>ついでにアクセスできるかも確認しておきましょう。</p>
+<pre><code class="language-bash">kubectl exec -it bastion -- curl -i http://hello-server.hello-server.svc.cluster.local
+</code></pre>
+<p>リクエストが成功したら step2 は完了です。お疲れ様でした！</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="step25-jsonnet-入門"><a class="header" href="#step25-jsonnet-入門">Step2.5: jsonnet 入門</a></h1>
+<p>次のステップで jsonnet を利用するので、先に jsonnet について学んでおきましょう。</p>
+<h2 id="tutorial"><a class="header" href="#tutorial">Tutorial</a></h2>
+<p>公式サイトの Tutorial が優秀なのでこれを見るのが手っ取り早いです。</p>
+<p>忙しい人は以下を読んでおけば後は雰囲気でなんとかなると思います。</p>
+<ul>
+<li>Syntax</li>
+<li>Functions, Imports</li>
+<li>Parameterize Entire Config</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="step3-アップデートできるようにする"><a class="header" href="#step3-アップデートできるようにする">Step3: アップデートできるようにする</a></h1>
+<p>現在のマニフェストは image に latest タグを指定しています。しかし、実際の運用では latest タグを使うことは非推奨です。第一に、latest タグの内容はその時々によって変化するので、デプロイに再現性がありません。第二に、ソースコードを更新したときにマニフェストに差分が発生しないので、差分発生をトリガーとしてデプロイを行う Kubernetes の考え方と相性が悪いです。</p>
+<p>そこで、latest タグではなく、特定のバージョンを一意に指定できる文字列、例えばコミットハッシュを指定することにします。</p>
+<p>しかし、ナイーブにこれを実現しようとすると、ソースコードに変更が入るたびにマニフェストの image を手動で変更することになります。実際にこういう運用をしているチームもあるのですが、煩雑ですしミスをするリスクもあるので自動化すべきでしょう。</p>
+<p>よって、以下のような仕様にします。</p>
+<ul>
+<li>ソースコードが変更されるたびに、CI で docker イメージをビルドし、コミットハッシュをタグとして push する。</li>
+<li>Argo CD によって main ブランチを監視し、main ブランチが変更されるたびに main ブランチの最新のコミットハッシュを使ってサービスをデプロイする。</li>
+</ul>
+<p>ただし、今回のハンズオンでは CI をセットアップする時間がないので人力 CI で代替します。</p>
+<h2 id="jsonnet-を導入する"><a class="header" href="#jsonnet-を導入する">jsonnet を導入する</a></h2>
+<p>今までマニフェストは単なる YAML ファイルでしたが、image タグを動的に差し込む必要があるので、何かしらの仕組みを導入しなければなりません。選択肢として</p>
+<ul>
+<li>kustomize</li>
+<li>jsonnet</li>
+<li>helm</li>
+</ul>
+<p>などがありますが、このハンズオンでは jsonnet を採用します。</p>
+<p>まず、既存のマニフェストを jsonnet 化していきましょう。</p>
+<p>YAML から JSON に変換するスクリプトを書いておくと便利なので、以下のスクリプトを PATH の通ったディレクトリに <code>yaml2json</code> という名前で保存しましょう。 <code>chmod +x</code> もしておいてください。</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+import yaml, json, sys
+docs = yaml.safe_load_all(sys.stdin)
+jsons = [json.dumps(doc, indent=2) for doc in docs]
+print("\n---\n".join(jsons))
+</code></pre>
+<p>(このスクリプトを動かすには PyYAML が必要です。入ってない人は <code>sudo apt install python3-yaml</code> または <code>python3 -m pip install pyyaml</code> でインストールしてください)</p>
+<p>それでは、step2 で作成した YAML マニフェストを jsonnet 化していきましょう。
+hello-server の <code>kubernetes</code> ディレクトリに移動して以下の手順を行ってください。</p>
+<pre><code class="language-bash">cat deployment.yaml | yaml2json | jsonnetfmt - &gt; deployment.libsonnet
+cat service.yaml | yaml2json | jsonnetfmt - &gt; service.libsonnet
+</code></pre>
+<p>そして、<code>main.jsonnet</code> を以下の内容で作成します。</p>
+<pre><code class="language-jsonnet">[
+  import 'deployment.libsonnet',
+  import 'service.libsonnet',
+]
+</code></pre>
+<p>これで jsonnet 化は完了です。動作確認してみましょう。</p>
+<pre><code class="language-bash">jsonnet main.jsonnet
+</code></pre>
+<p>これで2つのマニフェストを配列としてまとめたものが出力されれば成功です。</p>
+<p>ここで jsonnet スクリプトの拡張子について説明しておきます。慣習的に以下のように拡張子を使い分けることが多いです。</p>
+<ul>
+<li><code>.jsonnet</code>: エントリポイントとなる jsonnet スクリプト</li>
+<li><code>.libsonnet</code>: 他の jsonnet スクリプトから import される jsonnet スクリプト</li>
+</ul>
+<p>jsonnet 化ができたら <code>*.yaml</code> の方のマニフェストは不要なので <code>git rm</code> しておいてください（残していると Argo CD によって両方デプロイされてしまいます）。</p>
+<h2 id="タグを差し込めるようにする"><a class="header" href="#タグを差し込めるようにする">タグを差し込めるようにする</a></h2>
+<p>では、タグを外部から差し込めるようにしましょう。</p>
+<p>まず、Deployment をタグを引数を取る関数として定義します。deployment.libsonnet を以下のように書き換えてください。</p>
+<ol>
+<li>
+<p>ファイルの先頭に <code>function(tag)</code> という行を挿入します。jsonnet では <code>function(引数) 式</code> という構文で無名関数を記述できます。もともと <code>deployment.libsonnet</code> はひとつの式だったので、これにより <code>tag</code> を受け取ってオブジェクトを返す関数になりました。</p>
+</li>
+<li>
+<p><code>image:</code> で始まる行を以下のように書き換えます。</p>
+<pre><code class="language-jsonnet">image: 'docker.example.com/hello-server:' + tag,
+</code></pre>
+<p>これで image のタグを外部から指定できるようになりました。</p>
+</li>
+<li>
+<p>フォーマットを整えます。</p>
+<pre><code class="language-bash">jsonnetfmt -i deployment.libsonnet
+</code></pre>
+</li>
+</ol>
+<p>この修正によって deployment.libsonnet が関数化されたので、main.jsonnet の方も修正しなければなりません。以下のように、deployment.libsonnet に引数を渡すように書き換えます。</p>
+<pre><code class="language-jsonnet">function(tag)
+  [
+    (import 'deployment.libsonnet')(tag),
+    import 'service.libsonnet',
+  ]
+</code></pre>
+<p>この書き換えにより、main.jsonnet のトップレベルの式が関数を返すようになりました。この関数の引数は <strong>TLAs (Top-Level Arguments)</strong> と呼ばれます。TLAs の値は <code>jsonnet</code> コマンドのコマンドライン引数として与えることができます。</p>
+<pre><code class="language-bash">jsonnet --tla-str tag=abcdefg main.jsonnet
+</code></pre>
+<p>hello-server を変更したので、<code>git commit</code> と <code>git push</code> を行い、そして <code>make push</code> しておいてください。
+<code>make push</code> は本来は CI で行うべきですが、今回のハンズオンでは人力で CI を代替します。</p>
+<h2 id="argo-cd-から-tlas-経由で引数を渡す"><a class="header" href="#argo-cd-から-tlas-経由で引数を渡す">Argo CD から TLAs 経由で引数を渡す</a></h2>
+<p>最後に、Argo CD から TLAs 経由でタグを差し込むようにしましょう。<code>hello-apps</code> の <code>hello-server.yaml</code> を以下のように書き換えてください。</p>
+<pre><code class="language-yaml">...
+  source:
+    ...
+    path: ...
+    # ！！以下を追加！！
+    # jsonnet の TLAs に渡す引数を指定する。
+    directory:
+      jsonnet:
+        tlas:
+        - name: "tag"
+          value: "$ARGOCD_APP_REVISION"
+    # ！！追加ここまで！！
+...
+</code></pre>
+<p><code>$ARGOCD_APP_REVISION</code> は <a href="https://argo-cd.readthedocs.io/en/stable/user-guide/build-environment/">Build Envrionemnt</a> と呼ばれる環境変数的なもので、Argo CD が実行時にデプロイ対象のコミットハッシュに置き換えてくれます。このように指定することで、tag には hello-server の main ブランチの最新のコミットハッシュが 渡されます。</p>
+<p>それでは、Application を更新しましょう。</p>
+<pre><code class="language-bash">argocd app create --upsert -f hello-server.yaml
+</code></pre>
+<p>このコマンドを打ったら Argo CD の UI を確認しましょう。うまく行っていれば、latest タグではなくコミットハッシュで指定されたイメージがデプロイされるはずです。</p>
+<h2 id="サービスをアップデートしてみる"><a class="header" href="#サービスをアップデートしてみる">サービスをアップデートしてみる</a></h2>
+<p>hello-server の main.go の version を <code>2.0.0</code> に書き換えてデプロイしてみましょう。</p>
+<p>ソースコードを書き換える → コミット → git push します。</p>
+<p>本来はこれだけで変更がデプロイされるはずですが、前述の通りハンズオンでは CI がないので以下の手順を行います。</p>
+<pre><code class="language-bash"># イメージをビルドして push する
+make push
+
+# Argo CD の sync を手動でキックする
+# 何もしなくても待っていれば自動的に sync されるが、待つのが面倒なので
+argocd app sync hello-server
+</code></pre>
+<p>sync が終われば、hello-server にリクエストを送ると <code>Hello (2.0.0)</code> が返ってくるはずです。</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="step4-複数環境にデプロイする"><a class="header" href="#step4-複数環境にデプロイする">Step4: 複数環境にデプロイする</a></h1>
+<p>実際の運用ではひとつのサービスを複数環境にデプロイする必要があります。典型的には、dev 環境、staging 環境、prod 環境の３つの環境にデプロイすることになるでしょう。このハンズオンでは、dev、staging、prod の３環境にデプロイする例を扱います。</p>
+<p>GitOps では環境と Git ブランチを対応させます。このハンズオンでは以下のようにブランチを切ることにします。</p>
+<div class="table-wrapper"><table><thead><tr><th>環境</th><th>ブランチ</th><th>用途</th></tr></thead><tbody>
+<tr><td>dev</td><td>develop</td><td>開発、試験など</td></tr>
+<tr><td>staging</td><td>main</td><td>適用前試験など</td></tr>
+<tr><td>prod</td><td>release</td><td>運用</td></tr>
+</tbody></table>
+</div>
+<p>また、例をより現実に近づけるために、環境ごとに異なる設定をしなければならないという要件を追加します。具体的には、hello-server に渡す <code>MESSAGE</code> 環境変数を環境に合わせて以下のように設定することにします。</p>
+<div class="table-wrapper"><table><thead><tr><th>環境</th><th><code>MESSAGE</code></th></tr></thead><tbody>
+<tr><td>dev</td><td><code>Hello (dev)</code></td></tr>
+<tr><td>staging</td><td><code>Hello (staging)</code></td></tr>
+<tr><td>prod</td><td><code>Hello (prod)</code></td></tr>
+</tbody></table>
+</div>
+<h2 id="namespace-を用意"><a class="header" href="#namespace-を用意">Namespace を用意</a></h2>
+<p>このハンズオンでは、環境ごとに Namespace を用意することで仮想的に環境を切り分けることにします。</p>
+<pre><code class="language-bash">kubectl create namespace dev-hello-server
+kubectl create namespace staging-hello-server
+kubectl create namespace prod-hello-server
+</code></pre>
+<h2 id="message-を差し込めるようにする"><a class="header" href="#message-を差し込めるようにする">MESSAGE を差し込めるようにする</a></h2>
+<p><code>MESSAGE</code> を環境ごとに変えたいので、<code>MESSAGE</code> を TLA によって指定できるようにしましょう。Step3 のやり方を参考にやってみてください。</p>
+<p>hello-server の kubernetes ディレクトリで以下を実行して <code>MESSAGE</code> 環境変数が <code>Hello (dev)</code> になっていたら成功です。</p>
+<pre><code class="language-bash">jsonnet --tla-str tag=abcdefg --tla-str message='Hello (dev)' main.jsonnet
+</code></pre>
+<h2 id="ブランチの作成"><a class="header" href="#ブランチの作成">ブランチの作成</a></h2>
+<p>各環境に対応するブランチを hello-server リポジトリに用意しましょう。main (staging に対応) はすでにあるので、develop (dev に対応) ブランチと release (prod に対応) ブランチを作成してください。参照先は main と同じコミットで大丈夫です。</p>
+<p>ブランチを作成したら、各ブランチを GitHub に push し、さらに各ブランチで <code>make push</code> を行ってください。</p>
+<h2 id="application-リソースの-jsonnet-化"><a class="header" href="#application-リソースの-jsonnet-化">Application リソースの jsonnet 化</a></h2>
+<p>デプロイ先の環境が３つになったので、Application リソースも３つ作る必要があります。当然ですが、共通部分はくくりだしたいので、パラメタライズできるように Application リソースを jsonnet 化します。</p>
+<p>Step3 の手順を参考に、hello-apps の hello-server.yaml を jsonnet 化して、hello-server.libsonnet を作ってください。</p>
+<p>そして、hello-server.libsonnet の内容を関数でくるみ、<code>env</code> と <code>branch</code> を引数で渡せるようにしましょう。
+そして、与えられた <code>env</code> と <code>branch</code> に応じて、以下のフィールドが正しく設定されるようにコードを修正していきましょう。</p>
+<ul>
+<li><code>metadata.name</code>
+<ul>
+<li>値に <code>env + '-hello-server'</code> を渡すようにする。</li>
+</ul>
+</li>
+<li><code>spec.source.targetRevision</code>
+<ul>
+<li>値に <code>branch</code> を渡すようにする。</li>
+</ul>
+</li>
+<li><code>spec.source.directory.jsonnet.tlas</code>
+<ul>
+<li>配列に <code>{name: 'message', value: 'Hello (%s)' % env}</code> を追加する。</li>
+</ul>
+</li>
+<li><code>spec.destination.namespace</code>
+<ul>
+<li>値に <code>env + '-hello-server'</code> を渡すようにする。</li>
+</ul>
+</li>
+</ul>
+<p>最後に、環境ごとに main.jsonnet を作ります。hello-server.libsonnet と同じディレクトリに <code>dev</code>, <code>staging</code>, <code>prod</code> というディレクトリを作成し、それらの下に main.jsonnet を作成してください。例えば、<code>prod/main.jsonnet</code> は以下のような内容になります。</p>
+<pre><code class="language-jsonnet">(import '../hello-server.libsonnet')('prod', 'release')
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong>
+最終的なコードは以下のような構成になります。ここまでの説明でよくわからないところがあれば、以下のコードを参考にしてください。</p>
+<p><a href="https://github.com/cybozu/argocd-handson/blob/main/step4/">https://github.com/cybozu/argocd-handson/blob/main/step4/</a></p>
+</blockquote>
+<p><code>main.jsonnet</code> を作成できたら適用してみましょう。</p>
+<pre><code class="language-bash">jsonnet dev/main.jsonnet | argocd app create --upsert -f -
+jsonnet staging/main.jsonnet | argocd app create --upsert -f -
+jsonnet prod/main.jsonnet | argocd app create --upsert -f -
+</code></pre>
+<h2 id="動作確認"><a class="header" href="#動作確認">動作確認</a></h2>
+<p>まず bastion に入って curl でリクエストを送ってみましょう。</p>
+<pre><code>kubectl exec -it bastion -- bash
+(bastion)$ curl -i hello-server.dev-hello-server.svc.cluster.local
+...
+Hello (dev) (v2.0.0)
+
+(bastion)$ curl -i hello-server.staging-hello-server.svc.cluster.local
+...
+Hello (staging) (v2.0.0)
+
+(bastion)$ curl -i hello-server.prod-hello-server.svc.cluster.local
+...
+Hello (prod) (v2.0.0)
+</code></pre>
+<p>環境によってメッセージが変化していることが確認できました。</p>
+<p>次にアップデートを試してみましょう。</p>
+<p>hello-server の develop ブランチに移動し、main.go の <code>version</code> を <code>v3.0.0</code> などに書き換えて commit &amp; push してください。</p>
+<p>そして <code>make push</code> し、<code>argocd app sync dev-hello-server</code> してください。(繰り返しますが、この手順は本来は CI で自動化されているものです。今回はハンズオンのため、手動でやっています)</p>
+<p>すると dev 環境に <code>v3.0.0</code> がデプロイされるはずです。bastion から確認してみてください。</p>
+<p>dev で動作確認できたら staging にデプロイしましょう。develop ブランチから main ブランチにプルリクエストを作り、マージしましょう。そして <code>make push &amp;&amp; argocd app sync staging-hello-server</code> しましょう。これで staging にデプロイができます。</p>
+<p>prod へのリリースも同様の手順です。やってみましょう。</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="step5-app-of-apps"><a class="header" href="#step5-app-of-apps">Step5: app-of-apps</a></h1>
+<p>Step4 までは Application リソースは手動で適用していました。しかし、サービスの種類が増えたり環境の数が増えたりすると適用すべき Application リソースの数も掛け算で増えていきます。これでは頻繁に手動手順を行う必要があり、あまり望ましい状態とは言えません。</p>
+<p>実は Application リソースも単なる Kubernetes のリソースであり、Argo CD によってデプロイすることができます。つまり、Application を作成する Application を作ることができます。この考え方を app-of-apps と言います。</p>
+<p>app-of-apps の考え方を採用すると、Kubernetes クラスタごとにひとつだけ手動で Application を適用すればよくなります。他の Application は、この Application によって自動的にデプロイされます。</p>
+<p>他の Application リソースをデプロイする Application リソースは慣習的に <code>*-apps</code> と名付けられます。</p>
+<p>大規模な Kubernetes クラスタの場合、app-of-apps の階層を多段にすることがあります。例えば サイボウズの Kubernetes 環境では以下のように Application が３層構造になっています(※)。それぞれの Application は一個下の階層の Application をデプロイし、最下層の Application は Deployment や Service といった具体的なリソースをデプロイします。</p>
+<div class="table-wrapper"><table><thead><tr><th>Application</th><th>何個あるのか</th><th>管理者</th></tr></thead><tbody>
+<tr><td><code>root-app</code></td><td>Kubernetes クラスタごとにひとつ</td><td>Kubernetes クラスタの管理者</td></tr>
+<tr><td><code>*-apps</code></td><td>(Kubernetes cluster, チーム) ごとにひとつ</td><td>そのチームに属する人</td></tr>
+<tr><td>サービスごとの Application</td><td>(Kubernetes cluster, 環境, サービス) ごとにひとつ</td><td>同上</td></tr>
+</tbody></table>
+</div>
+<p>※ 実際にはもっと複雑ですが、このハンズオンではかなり単純化して説明しています。</p>
+<h2 id="app-of-apps-を導入する"><a class="header" href="#app-of-apps-を導入する">app-of-apps を導入する</a></h2>
+<p>それでは hello-server も app-of-apps に移行してみましょう。このハンズオンでは単純化のために app-of-apps の階層は２層にします。つまり、root-app が直接 <code>{dev,staging,prod}-hello-server</code> という Application 群をデプロイする構成にします。</p>
+<p>まず、Step4 で作ったリソースを削除して環境をキレイにしておきます。</p>
+<pre><code class="language-bash">argocd app delete dev-hello-server
+argocd app delete staging-hello-server
+argocd app delete prod-hello-server
+</code></pre>
+<p>次に、hello-apps リポジトリ側の準備をします。まず、ディレクトリレイアウトを少し変えましょう。hello-apps リポジトリのトップに hello-server ディレクトリを作成し、既存のファイルをすべてその下に移動させます。</p>
+<pre><code class="language-bash">mkdir hello-server
+git mv dev prod staging hello-server.libsonnet hello-server
+</code></pre>
+<p>次にルートとなる Application を作ります。このハンズオンでは一つの Kubernetes クラスタの中にすべての環境を収めているため、ルートとなる Application はひとつで十分です。</p>
+<p>hello-apps リポジトリのトップに root-app というディレクトリを作成し、その下に root-app.yaml という名前で Application のマニフェストを配置します。</p>
+<pre><code class="language-bash">mkdir root-app
+editor root-app/root-app.yaml
+</code></pre>
+<pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    # 自分のリポジトリのURLに合わせて書き換えてください
+    # hello-server ではなく hello-apps を参照することに注意
+    repoURL: https://github.com/YOUR_NAME/hello-apps
+    targetRevision: main
+    # デプロイする Application リソースがあるディレクトリを指定
+    path: hello-server
+    directory:
+      # サブディレクトリにある *.jsonnet もデプロイ対象に含める
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    # ここで指定した namespace よりも各マニフェストに書かれている .metadata.namespace のほうが優先される。
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+</code></pre>
+<p>それでは、root-app をデプロイしてみましょう。</p>
+<pre><code class="language-bash"># Application が存在しないことを確認しておく
+argocd app list
+
+# root-app を作成
+argocd app create -f root-app/root-app.yaml
+
+# root-app が {dev,staging,prod}-hello-server を作成してくれるので
+# ある程度待つと Application が4つ表示されるようになる
+argocd app list
+
+# Pod や Deployment などもそれぞれの namespace に作成されている
+kubectl get all -n prod-hello-server
+</code></pre>
+<p>これで app-of-apps の導入ができました。<code>{dev,staging,prod}-hello-server</code> が Argo CD によって管理されるようになったため、Git 上でマニフェストが更新されれば自動的に対応する環境にデプロイされます。手動でのオペレーションは必要ありません (このハンズオンの環境では <code>argocd app sync </code> を手で打つ必要がありますが)。</p>
+<p>唯一 root-app だけは更新時に手動で <code>argocd app create --upsert</code> する必要があります。しかし root-app はめったに変更しないでしょうから、コストとしては許容範囲内だと思います。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+
+    </div>
+    </body>
+</html>
