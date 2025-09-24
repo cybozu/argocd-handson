@@ -52,23 +52,27 @@ jsonnet --tla-str tag=abcdefg --tla-str message='Hello (dev)' main.jsonnet
 Step3 の手順を参考に、hello-apps の hello-server.yaml を jsonnet 化して、hello-server.libsonnet を作ってください。
 
 そして、hello-server.libsonnet の内容を関数でくるみ、`env` と `branch` を引数で渡せるようにしましょう。
-
-さらに、与えられた `env` と `branch` に応じて、以下のフィールドが正しく設定されるように書き換えましょう。
+そして、与えられた `env` と `branch` に応じて、以下のフィールドが正しく設定されるようにコードを修正していきましょう。
 
 - `metadata.name`
-    - `env + '-hello-server'` を渡すようにする。
+    - 値に `env + '-hello-server'` を渡すようにする。
 - `spec.source.targetRevision`
-    - `branch` を渡すようにする。
+    - 値に `branch` を渡すようにする。
 - `spec.source.directory.jsonnet.tlas`
     - 配列に `{name: 'message', value: 'Hello (%s)' % env}` を追加する。
 - `spec.destination.namespace`
-    - `env + '-hello-server'` を渡すようにする。
+    - 値に `env + '-hello-server'` を渡すようにする。
 
 最後に、環境ごとに main.jsonnet を作ります。hello-server.libsonnet と同じディレクトリに `dev`, `staging`, `prod` というディレクトリを作成し、それらの下に main.jsonnet を作成してください。例えば、`prod/main.jsonnet` は以下のような内容になります。
 
 ```jsonnet
 (import '../hello-server.libsonnet')('prod', 'release')
 ```
+
+> **Note:**
+> 最終的なコードは以下のような構成になります。ここまでの説明でよくわからないところがあれば、以下のコードを参考にしてください。
+>
+> <https://github.com/cybozu/argocd-handson/blob/main/step4/>
 
 `main.jsonnet` を作成できたら適用してみましょう。
 

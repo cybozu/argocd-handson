@@ -44,7 +44,7 @@ spec:
 マニフェストをコピーしたら自分の環境に合わせて **repoURL, targetRevision, path を書き換えてください**。
 
 - `repoURL` には、自分の hello-server のリポジトリの URL を指定します。
-- `targetRevision` には、自分の hello-server のデフォルトブランチ (main または main) を指定します。
+- `targetRevision` には、自分の hello-server のデフォルトブランチ (main または master) を指定します。
 - `path` にはマニフェストを格納したディレクトリへのパスを指定します。このハンズオンの手順の通りにすすめていれば `kubernetes` を指定することになるでしょう。
 
 ## Argo CD を使ってデプロイする
