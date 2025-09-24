@@ -9,11 +9,27 @@ GitHub に新しく Git リポジトリを作成してください。名前は�
 
 ## ソースコードをコピー
 
-以下のディレクトリに簡単な HTTP サーバーのソースコードと Kubernetes マニフェストが入っています。これを今作ったリポジトリにコピーしてください。
+`hello-server` に最初のコードを投入しましょう。
+
+以下のディレクトリに簡単な HTTP サーバーのソースコードと Kubernetes マニフェストが入っています。
 
 <https://github.com/cybozu/argocd-handson/tree/main/src/step1/>
 
-コピーしたファイルやディレクトリをすべてコミットして `git push` してください。
+これを今作ったリポジトリにコピーします。
+カレントディレクトリが `hello-server` のトップにある状態で以下の手順を実行してください。
+
+```bash
+# 一時ディレクトリ作成してそこに移動
+pushd $(mktemp -d)
+# ソースコードを取得
+git clone https://github.com/cybozu/argocd-handson .
+# step1 の内容を元のディレクトリにコピー
+cp -r src/step1/* $(dirs -l +1)
+# 元のディレクトリに戻る
+popd
+```
+
+コピーしたファイルやディレクトリをすべてコミットして `git push` しておいてください。
 
 ## イメージをビルド
 
