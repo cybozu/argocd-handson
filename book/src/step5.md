@@ -20,7 +20,7 @@ app-of-apps の考え方を採用すると、Kubernetes クラスタごとにひ
 
 ## app-of-apps を導入する
 
-それでは hello-server も app-of-apps に移行してみましょう。このハンズオンでは単純化のために app-of-apps の階層は２層にします。つまり、root-app が直接 `{dev,staging,prod}-hello-server` をデプロイする構成にします。
+それでは hello-server も app-of-apps に移行してみましょう。このハンズオンでは単純化のために app-of-apps の階層は２層にします。つまり、root-app が直接 `{dev,staging,prod}-hello-server` という Application 群をデプロイする構成にします。
 
 まず、Step4 で作ったリソースを削除して環境をキレイにしておきます。
 
