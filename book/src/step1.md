@@ -11,7 +11,7 @@ GitHub に新しく Git リポジトリを作成してください。名前は�
 
 以下のディレクトリに簡単な HTTP サーバーのソースコードと Kubernetes マニフェストが入っています。これを今作ったリポジトリにコピーしてください。
 
-<https://github.com/cybozu/argocd-handson/blob/main/step1/>
+<https://github.com/cybozu/argocd-handson/tree/main/src/step1/>
 
 コピーしたファイルやディレクトリをすべてコミットして `git push` してください。
 

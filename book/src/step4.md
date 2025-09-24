@@ -72,7 +72,7 @@ Step3 の手順を参考に、hello-apps の hello-server.yaml を jsonnet 化�
 > **Note:**
 > 最終的なコードは以下のような構成になります。ここまでの説明でよくわからないところがあれば、以下のコードを参考にしてください。
 >
-> <https://github.com/cybozu/argocd-handson/blob/main/step4/>
+> <https://github.com/cybozu/argocd-handson/tree/main/src/step4/>
 
 `main.jsonnet` を作成できたら適用してみましょう。
 
