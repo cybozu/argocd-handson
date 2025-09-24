@@ -86,7 +86,7 @@ jsonnet prod/main.jsonnet | argocd app create --upsert -f -
 
 まず bastion に入って curl でリクエストを送ってみましょう。
 
-```
+```bash
 kubectl exec -it bastion -- bash
 (bastion)$ curl -i hello-server.dev-hello-server.svc.cluster.local
 ...
