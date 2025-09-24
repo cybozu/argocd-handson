@@ -1,5 +1,7 @@
 # Step2: Argo CD を使ってデプロイしてみる
 
+それでは Argo CD を使ってデプロイしてみましょう。
+
 ## Argo CD用の Git リポジトリを作る
 
 Step1 で作ったリポジトリとは別に、Argo CD のマニフェストを置くためのリポジトリを GitHub に作ってください。リポジトリ名は何でもいいですが、ここでは `hello-apps` を指定したものとして進めます。リポジトリのスコープは public にしておいてください。
@@ -20,13 +22,13 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  # source と path は自分のリポジトリのURLやパスに合わせて書き換えてください
   source:
-    repoURL: https://github.com/YOUR_NAME/argocd-handson
-    # "Revision" っていう名前だがブランチも指定できる。
+    # repoURL は自分のリポジトリのURLに合わせて書き換えてください
+    repoURL: https://github.com/YOUR_NAME/hello-server
+    # "Revision" という名前だがブランチも指定できる。
     targetRevision: main
     # Kubernetes マニフェストを含むディレクトリを指定する。
-    path: step1/kubernetes
+    path: kubernetes
   destination:
     server: https://kubernetes.default.svc
     # sync 先の namespace。 metadata のほうの namespace と混同しないように。

@@ -13,11 +13,11 @@ spec:
 
   # repoURL と path を自分のリポジトリのURLやパスに合わせて書き換えてください
   source:
-    repoURL: https://github.com/YOUR_NAME/argocd-handson
+    repoURL: https://github.com/YOUR_NAME/hello-server
     # "Revision" っていう名前だけどブランチも指定できる。
     targetRevision: main
     # Kubernetes マニフェストを含むディレクトリを指定する。
-    path: src/step1/kubernetes
+    path: kubernetes
 
   destination:
     server: https://kubernetes.default.svc

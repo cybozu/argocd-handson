@@ -56,11 +56,13 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  # source と path は自分のリポジトリのURLやパスに合わせて書き換えてください
   source:
-    repoURL: https://github.com/YOUR_NAME/argocd-handson
+    # 自分のリポジトリのURLに合わせて書き換えてください
+    # hello-server ではなく hello-apps を参照することに注意
+    repoURL: https://github.com/YOUR_NAME/hello-apps
     targetRevision: main
-    path: step5/hello-apps/hello-server
+    # デプロイする Application リソースがあるディレクトリを指定
+    path: hello-server
     directory:
       # サブディレクトリにある *.jsonnet もデプロイ対象に含める
       recurse: true
@@ -72,8 +74,6 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    retry:
-      limit: 30
 ```
 
 それでは、root-app をデプロイしてみましょう。

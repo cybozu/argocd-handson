@@ -13,9 +13,9 @@ function(env, branch)
       project: 'default',
       // repoURL と path を自分のリポジトリのURLやパスに合わせて書き換えてください
       source: {
-        repoURL: 'https://github.com/YOUR_NAME/argocd-handson',
+        repoURL: 'https://github.com/YOUR_NAME/hello-server',
         targetRevision: branch,
-        path: 'src/step4/hello-server/kubernetes',
+        path: 'kubernetes',
         directory: {
           jsonnet: {
             tlas: [

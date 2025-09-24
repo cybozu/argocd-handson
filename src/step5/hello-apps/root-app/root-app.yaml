@@ -10,9 +10,9 @@ spec:
 
   # repoURL と path を自分のリポジトリのURLやパスに合わせて書き換えてください
   source:
-    repoURL: https://github.com/YOUR_NAME/argocd-handson
+    repoURL: https://github.com/YOUR_NAME/hello-apps
     targetRevision: main
-    path: src/step5/hello-apps/hello-server
+    path: hello-server
 
     directory:
       # サブディレクトリにある *.jsonnet もデプロイ対象に含める

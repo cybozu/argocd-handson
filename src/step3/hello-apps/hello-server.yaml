@@ -13,11 +13,11 @@ spec:
 
   # repoURL と path を自分のリポジトリのURLやパスに合わせて書き換えてください
   source:
-    repoURL: https://github.com/YOUR_NAME/argocd-handson
+    repoURL: https://github.com/YOUR_NAME/hello-server
     # "Revision" っていう名前だけどブランチも指定できる。
     targetRevision: main
     # Kubernetes マニフェストを含むディレクトリを指定する。
-    path: src/step3/hello-server/kubernetes
+    path: kubernetes
     # jsonnet の TLAs に渡す引数を指定する。
     directory:
       jsonnet:
