@@ -217,7 +217,7 @@ cat service.yaml | yaml2json | jsonnetfmt - &gt; service.libsonnet
 <pre><code class="language-bash">jsonnet main.jsonnet
 </code></pre>
 <p>これで2つのマニフェストを配列としてまとめたものが出力されれば成功です。</p>
-<p>ここで jsonnet スクリプトの拡張子について説明しておきます。慣習的に以下のように拡張子を使い分けることが多いです。</p>
+<p><code>.jsonnt</code> と <code>.libsonnet</code> という２つの拡張子が出てきましたが、これらは慣習的に以下のように使い分けることが多いです。</p>
 <ul>
 <li><code>.jsonnet</code>: エントリポイントとなる jsonnet スクリプト</li>
 <li><code>.libsonnet</code>: 他の jsonnet スクリプトから import される jsonnet スクリプト</li>
@@ -242,16 +242,17 @@ cat service.yaml | yaml2json | jsonnetfmt - &gt; service.libsonnet
 </code></pre>
 </li>
 </ol>
-<p>この修正によって deployment.libsonnet が関数化されたので、main.jsonnet の方も修正しなければなりません。以下のように、deployment.libsonnet に引数を渡すように書き換えます。</p>
+<p>この修正によって deployment.libsonnet が関数化されたので、main.jsonnet の方も修正しなければなりません。main.jsonnet 自体が tag を受け取るようにし、かつ deployment.libsonnet に tag を渡すようにします。</p>
 <pre><code class="language-jsonnet">function(tag)
   [
     (import 'deployment.libsonnet')(tag),
     import 'service.libsonnet',
   ]
 </code></pre>
-<p>この書き換えにより、main.jsonnet のトップレベルの式が関数を返すようになりました。この関数の引数は <strong>TLAs (Top-Level Arguments)</strong> と呼ばれます。TLAs の値は <code>jsonnet</code> コマンドのコマンドライン引数として与えることができます。</p>
+<p>このように、jsonnet では最上位の式が引数を受け取ることができます。この引数は <strong>TLAs (Top-Level Arguments)</strong> と呼ばれます。TLAs の値は <code>jsonnet</code> コマンドのコマンドライン引数として与えることができます。</p>
 <pre><code class="language-bash">jsonnet --tla-str tag=abcdefg main.jsonnet
 </code></pre>
+<p>これで <code>tag</code> を外部から差し込む準備ができました。</p>
 <p>hello-server を変更したので、<code>git commit</code> と <code>git push</code> を行い、そして <code>make push</code> しておいてください。
 <code>make push</code> は本来は CI で行うべきですが、今回のハンズオンでは人力で CI を代替します。</p>
 <h2 id="argo-cd-から-tlas-経由で引数を渡す"><a class="header" href="#argo-cd-から-tlas-経由で引数を渡す">Argo CD から TLAs 経由で引数を渡す</a></h2>
