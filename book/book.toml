@@ -1,0 +1,5 @@
+[book]
+authors = ["Yusuke Nojima"]
+language = "ja"
+src = "src"
+title = "実践 Argo CD"
