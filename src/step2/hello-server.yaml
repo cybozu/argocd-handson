@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hello-server
+  # Application リソースは決められた namespace に作成しないといけない。
+  namespace: argocd
+  # Application を消した時にその Application が作成したリソースを削除したい場合、
+  # この finalizer を設定しておく必要がある。
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  # repoURL と path を自分のリポジトリのURLやパスに合わせて書き換えてください
+  source:
+    repoURL: https://github.com/YOUR_NAME/argocd-handson
+    # "Revision" っていう名前だけどブランチも指定できる。
+    targetRevision: main
+    # Kubernetes マニフェストを含むディレクトリを指定する。
+    path: src/step1/kubernetes
+
+  destination:
+    server: https://kubernetes.default.svc
+    # sync 先の namespace。 metadata のほうの namespace と混同しないように。
+    namespace: hello-server
+
+  syncPolicy:
+    automated:
+      # prune が true の場合、Git に定義されていないリソースを自動的に削除する。
+      prune: true
+      # selfHeal が true の場合、Git にコミットがないときでも定期的に sync を行う。
+      selfHeal: true

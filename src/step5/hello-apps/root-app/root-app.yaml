@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  # repoURL と path を自分のリポジトリのURLやパスに合わせて書き換えてください
+  source:
+    repoURL: https://github.com/YOUR_NAME/argocd-handson
+    targetRevision: main
+    path: src/step5/hello-apps/hello-server
+
+    directory:
+      # サブディレクトリにある *.jsonnet もデプロイ対象に含める
+      recurse: true
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
