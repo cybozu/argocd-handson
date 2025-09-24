@@ -29,6 +29,12 @@ kubectl create namespace staging-hello-server
 kubectl create namespace prod-hello-server
 ```
 
+Application リソースを作り直すので前のステップで作成した Application リソースは削除しておきます。
+
+```bash
+argocd app delete hello-server
+```
+
 ## MESSAGE を差し込めるようにする
 
 `MESSAGE` を環境ごとに変えたいので、`MESSAGE` を TLA によって指定できるようにしましょう。Step3 のやり方を参考にやってみてください。

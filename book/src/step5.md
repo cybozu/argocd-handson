@@ -1,6 +1,6 @@
 # Step5: app-of-apps
 
-Step4 までは Application リソースは手動で適用していました。しかし、サービスの種類が増えたり環境の数が増えたりすると適用すべき Application リソースの数も掛け算で増えていきます。これでは頻繁に手動手順を行う必要があり、あまり望ましい状態とは言えません。
+Step4 までは Application リソースは手動で適用していました。しかし、この状態だと Application 自体に対する更新 (例えば TLA を追加したり、TLA に渡す値を変更したりなど) は手動で `argocd app create --upsert` を打つ必要があり、GitOps の理念に反してしまいます。Application のマニフェストも Argo CD に管理させるにはどうしたらよいでしょうか？
 
 実は Application リソースも単なる Kubernetes のリソースであり、Argo CD によってデプロイすることができます。つまり、Application を作成する Application を作ることができます。この考え方を app-of-apps と言います。
 
@@ -76,6 +76,8 @@ spec:
       selfHeal: true
 ```
 
+ここで一旦 hello-apps で git commit & git push しておいてください。
+
 それでは、root-app をデプロイしてみましょう。
 
 ```bash
@@ -96,3 +98,15 @@ kubectl get all -n prod-hello-server
 これで app-of-apps の導入ができました。`{dev,staging,prod}-hello-server` が Argo CD によって管理されるようになったため、Git 上でマニフェストが更新されれば自動的に対応する環境にデプロイされます。手動でのオペレーションは必要ありません (このハンズオンの環境では `argocd app sync ` を手で打つ必要がありますが)。
 
 唯一 root-app だけは更新時に手動で `argocd app create --upsert` する必要があります。しかし root-app はめったに変更しないでしょうから、コストとしては許容範囲内だと思います。
+
+## 動作確認
+
+せっかくなので、Application を更新してみましょう。
+
+`hello-server.libsonnet` の `value: 'Hello (%s)' % env,` の部分を `value: 'Hello World (%s)' % env,` に書き換えて `argocd app sync root-app` してください。各 Application が自動的に更新され、新しい value が反映されるはずです。
+
+ここで dev, staging, prod が一斉に更新されたことに気付いた人もいるかもしれません。実は現在の hello-apps の作りでは dev → staging → prod と段階を踏むようにはなっていません。これを行うには hello-server と同様、hello-apps にも `develop`, `main`, `release` のようにブランチを作り、root-app から各環境ごとに異なるブランチを参照するようにする必要があります。興味がある人はぜひやってみてください。
+
+以上でハンズオンは終わりです。
+私達は GitHub 上のコードの変更 (`hello-server` も `hello-apps` も両方) に自動で追従する Kubernetes 環境を構築できました。
+お疲れ様でした！
