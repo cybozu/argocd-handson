@@ -3,3 +3,6 @@ authors = ["Yusuke Nojima"]
 language = "ja"
 src = "src"
 title = "実践 Argo CD"
+
+[output.html]
+site-url = "/argocd-handson/"
