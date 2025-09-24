@@ -226,7 +226,8 @@ argocd app create -f hello-server.yaml
 <p>ついでにアクセスできるかも確認しておきましょう。</p>
 <pre><code class="language-bash">kubectl exec -it bastion -- curl -i http://hello-server.hello-server.svc.cluster.local
 </code></pre>
-<p>リクエストが成功したら step2 は完了です。お疲れ様でした！</p>
+<p>リクエストが成功したら step2 は完了です。
+<code>hello-apps</code> の内容をコミット &amp; push して、次のステップに進みましょう。</p>
 
                     </main>
 
