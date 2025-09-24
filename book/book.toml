@@ -4,5 +4,8 @@ language = "ja"
 src = "src"
 title = "実践 Argo CD"
 
+[build]
+build-dir = "../docs"
+
 [output.html]
 site-url = "/argocd-handson/"
