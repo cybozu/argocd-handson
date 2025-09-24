@@ -448,8 +448,8 @@ cat service.yaml | yaml2json | jsonnetfmt - &gt; service.libsonnet
 </code></pre>
 <p>このコマンドを打ったら Argo CD の UI を確認しましょう。うまく行っていれば、latest タグではなくコミットハッシュで指定されたイメージがデプロイされるはずです。</p>
 <h2 id="サービスをアップデートしてみる"><a class="header" href="#サービスをアップデートしてみる">サービスをアップデートしてみる</a></h2>
-<p>hello-server の main.go の version を <code>2.0.0</code> に書き換えてデプロイしてみましょう。</p>
-<p>ソースコードを書き換える → コミット → git push します。</p>
+<p>このステップで行った変更により、Argo CD は main ブランチの最新のコミットを Kubernetes クラスタに自動的にデプロイするようになりました。本当にデプロイしてくれるのか、実際に試してみましょう。</p>
+<p>hello-server の main.go の version の値を <code>2.0.0</code> に書き換えて、コミット &amp; push してください。</p>
 <p>本来はこれだけで変更がデプロイされるはずですが、前述の通りハンズオンでは CI がないので以下の手順を行います。</p>
 <pre><code class="language-bash"># イメージをビルドして push する
 make push
@@ -458,7 +458,9 @@ make push
 # 何もしなくても待っていれば自動的に sync されるが、待つのが面倒なので
 argocd app sync hello-server
 </code></pre>
-<p>sync が終われば、hello-server にリクエストを送ると <code>Hello (2.0.0)</code> が返ってくるはずです。</p>
+<p>sync が終われば、hello-server にリクエストを送ると <code>Hello (2.0.0)</code> が返ってくるはずです。
+Step1 で行った手順を参考に、確認してみてください。</p>
+<p>更新されたことが確認できればこのステップは完了です。hello-apps の方もコミット &amp; push して、次のステップに進みましょう。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="step4-複数環境にデプロイする"><a class="header" href="#step4-複数環境にデプロイする">Step4: 複数環境にデプロイする</a></h1>
 <p>実際の運用ではひとつのサービスを複数環境にデプロイする必要があります。典型的には、dev 環境、staging 環境、prod 環境の３つの環境にデプロイすることになるでしょう。このハンズオンでは、dev、staging、prod の３環境にデプロイする例を扱います。</p>
 <p>GitOps では環境と Git ブランチを対応させます。このハンズオンでは以下のようにブランチを切ることにします。</p>
