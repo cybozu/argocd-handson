@@ -67,5 +67,5 @@ Argo CD の UI を見に行くと作成されたアプリケーションの様�
 kubectl exec -it bastion -- curl -i http://hello-server.hello-server.svc.cluster.local
 ```
 
-リクエストが成功したら step2 は完了です。お疲れ様でした！
-
+リクエストが成功したら step2 は完了です。
+`hello-apps` の内容をコミット & push して、次のステップに進みましょう。
