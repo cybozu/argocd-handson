@@ -238,7 +238,7 @@ kubectl create namespace prod-hello-server
 <blockquote>
 <p><strong>Note:</strong>
 最終的なコードは以下のような構成になります。ここまでの説明でよくわからないところがあれば、以下のコードを参考にしてください。</p>
-<p><a href="https://github.com/cybozu/argocd-handson/blob/main/step4/">https://github.com/cybozu/argocd-handson/blob/main/step4/</a></p>
+<p><a href="https://github.com/cybozu/argocd-handson/tree/main/src/step4/">https://github.com/cybozu/argocd-handson/tree/main/src/step4/</a></p>
 </blockquote>
 <p><code>main.jsonnet</code> を作成できたら適用してみましょう。</p>
 <pre><code class="language-bash">jsonnet dev/main.jsonnet | argocd app create --upsert -f -
